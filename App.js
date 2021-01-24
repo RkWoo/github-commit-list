@@ -6,6 +6,7 @@ import {
   TextInput,
   Button,
   FlatList,
+  Alert,
 } from 'react-native';
 import { Octokit } from "@octokit/rest";
 
@@ -17,7 +18,7 @@ const App: () => React$Node = () => {
   const [commitsResult, setCommitsResult] = useState(null);
   
   return (
-    <View style={{flex:1}}>
+    <View style={{flex:1, marginHorizontal:10}}>
       <TextInput
         style={styles.repoInput}
         onChangeText={(text) => setRepoOwnerText(text)}
@@ -39,6 +40,7 @@ const App: () => React$Node = () => {
         style={{flex:1}}
         data={commitsResult}
         renderItem={({item}) => renderItem(item)}
+        keyExtractor={(item) => item.sha}
       />
 
     </View>
@@ -49,16 +51,19 @@ const App: () => React$Node = () => {
     getCommits(repoOwnerText, repoNameText, 25)
       .then(({ data }) => {
         setCommitsResult(data)
-        console.log('getCommits data[0]:', JSON.stringify(data[0]))
       })
       .catch((error) => {
-        console.log('getCommits error:', error.message)
+        Alert.alert('Get Commits Error', error.message)
       })
   }
 
   function renderItem(item) {
     return (
-      <Text>{item.sha}</Text>
+      <View>
+        <Text>{`Author: ${item.commit.author.name}`}</Text>
+        <Text>{`SHA: ${item.sha}`}</Text>
+        <Text>{`Message: ${item.commit.message}`}</Text>
+      </View>
     )
   }
 
@@ -77,7 +82,7 @@ const styles = StyleSheet.create({
   repoInput: {
     borderWidth: 1,
     borderColor: 'black',
-    margin: 10,
+    marginVertical: 10,
   },
 });
 
