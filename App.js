@@ -59,10 +59,15 @@ const App: () => React$Node = () => {
 
   function renderItem(item) {
     return (
-      <View>
-        <Text>{`Author: ${item.commit.author.name}`}</Text>
-        <Text>{`SHA: ${item.sha}`}</Text>
-        <Text>{`Message: ${item.commit.message}`}</Text>
+      <View style={styles.commitItem}>
+        <Text style={styles.boldText}>Author</Text>
+        <Text style={styles.resultInfo}>{item.commit.author.name}</Text>
+
+        <Text style={styles.boldText}>SHA</Text>
+        <Text style={styles.resultInfo}>{item.sha}</Text>
+
+        <Text style={styles.boldText}>Message</Text>
+        <Text style={styles.resultInfo}>{item.commit.message}</Text>
       </View>
     )
   }
@@ -83,6 +88,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'black',
     marginVertical: 10,
+  },
+  commitItem: {
+    flex: 1,
+    marginVertical: 10,
+    borderRadius: 8,
+    backgroundColor: 'lightgray',
+    padding: 10,
+  },
+  boldText: {
+    fontWeight: 'bold',
+  },
+  resultInfo: {
+    paddingLeft: 10,
   },
 });
 
