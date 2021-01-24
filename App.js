@@ -14,6 +14,7 @@ const octokit = new Octokit();
 const App: () => React$Node = () => {
   const [repoOwnerText, setRepoOwnerText] = useState('');
   const [repoNameText, setRepoNameText] = useState('');
+  const [commitsResult, setCommitsResult] = useState(null);
   
   return (
     <View style={{flex:1}}>
@@ -36,7 +37,7 @@ const App: () => React$Node = () => {
         onPress={() => onPressGetCommits()} />
       <FlatList
         style={{flex:1}}
-        data={null}
+        data={commitsResult}
         renderItem={({item}) => renderItem(item)}
       />
 
@@ -45,11 +46,19 @@ const App: () => React$Node = () => {
   );
 
   function onPressGetCommits() {
+    getCommits(repoOwnerText, repoNameText, 25)
+      .then(({ data }) => {
+        setCommitsResult(data)
+        console.log('getCommits data[0]:', JSON.stringify(data[0]))
+      })
+      .catch((error) => {
+        console.log('getCommits error:', error.message)
+      })
   }
 
   function renderItem(item) {
     return (
-      <View/>
+      <Text>{item.sha}</Text>
     )
   }
 
