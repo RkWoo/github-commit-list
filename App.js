@@ -7,16 +7,19 @@ import {
   Button,
   FlatList,
   Alert,
+  Keyboard,
+  ActivityIndicator,
 } from 'react-native';
 import { Octokit } from "@octokit/rest";
 
 const octokit = new Octokit();
 
 const App: () => React$Node = () => {
-  const [repoOwnerText, setRepoOwnerText] = useState('');
-  const [repoNameText, setRepoNameText] = useState('');
+  const [repoOwnerText, setRepoOwnerText] = useState('facebook');
+  const [repoNameText, setRepoNameText] = useState('react');
   const [commitsResult, setCommitsResult] = useState(null);
-  
+  const [isWaiting, setIsWaiting] = useState(false);
+
   return (
     <View style={{flex:1, marginHorizontal:10}}>
       <TextInput
@@ -35,7 +38,18 @@ const App: () => React$Node = () => {
       </TextInput>
       <Button
         title='Get Commits'
+        disabled={isWaiting || repoNameText.length==0 || repoOwnerText==0}
         onPress={() => onPressGetCommits()} />
+      { isWaiting &&
+        <ActivityIndicator
+          size='large'
+          color='blue'
+          style={{flex:1}}
+        />
+      }
+      { !isWaiting && commitsResult!==null && commitsResult.length===0 &&
+        <Text>No commits found</Text>
+      }
       <FlatList
         style={{flex:1}}
         data={commitsResult}
@@ -48,13 +62,18 @@ const App: () => React$Node = () => {
   );
 
   function onPressGetCommits() {
+    Keyboard.dismiss()
+    setCommitsResult(null)
+    setIsWaiting(true)
+
     getCommits(repoOwnerText, repoNameText, 25)
       .then(({ data }) => {
         setCommitsResult(data)
       })
       .catch((error) => {
-        Alert.alert('Get Commits Error', error.message)
+        Alert.alert(error.message, 'Unable to get the commit list. Check for correct repository owner and name.')
       })
+      .finally(() => setIsWaiting(false))
   }
 
   function renderItem(item) {
