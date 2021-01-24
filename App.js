@@ -7,7 +7,9 @@ import {
   Button,
   FlatList,
 } from 'react-native';
+import { Octokit } from "@octokit/rest";
 
+const octokit = new Octokit();
 
 const App: () => React$Node = () => {
   const [repoOwnerText, setRepoOwnerText] = useState('');
@@ -51,8 +53,16 @@ const App: () => React$Node = () => {
     )
   }
 
-
 };
+
+export const getCommits = (repoOwner, repoName, maxCount) => {
+  return octokit.repos.listCommits(
+    {
+      owner: repoOwner,
+      repo: repoName,
+      per_page: maxCount,
+    })
+}
 
 const styles = StyleSheet.create({
   repoInput: {
