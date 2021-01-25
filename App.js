@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {
+  SafeAreaView,
   StyleSheet,
   View,
   Text,
@@ -21,7 +22,7 @@ const App: () => React$Node = () => {
   const [isWaiting, setIsWaiting] = useState(false);
 
   return (
-    <View style={{flex:1, marginHorizontal:10}}>
+    <SafeAreaView style={{flex:1, marginHorizontal:10}}>
       <Text style={{fontSize:16, fontWeight:'bold', marginTop:10}}>
         Select a GitHub repository
        </Text>
@@ -79,7 +80,7 @@ const App: () => React$Node = () => {
         keyExtractor={(item) => item.sha}
       />
 
-    </View>
+    </SafeAreaView>
 
   );
 
